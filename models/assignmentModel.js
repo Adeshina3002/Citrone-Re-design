@@ -7,10 +7,11 @@ const assignmentSchema = mongoose.Schema({
     },
     description: {
         type: String,
+        required: true
     },
     lesson: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "lesson",
+        ref: "Module",
         required: true
     },
     submittedBy: {

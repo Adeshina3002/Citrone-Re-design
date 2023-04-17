@@ -31,10 +31,10 @@ const userSchema = new mongoose.Schema({
         enum: ["UI/UX", "Frontend", "Backend", "Data Science"],
         required: [true, "Select your track"]
     },
-    role: {
+    roles: {
         type: String,
-        enum: ["user", "admin", "tutor"],
-        default: "user"
+        enum: ["Student", "admin", "tutor"],
+        default: "Student"
 }},
     {timestamps: true}
 )

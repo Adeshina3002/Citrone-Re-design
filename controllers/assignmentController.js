@@ -4,7 +4,7 @@ const { StatusCodes } = require("http-status-codes")
 
 const submitAssignment = async (req, res) => {
     try {
-        const lessonId = await Course.findOne({ _id: req.body.lessonId })
+        const lesson = await Course.findOne({ _id: req.body.lessonId })
 
         if (!lessonId) {
             return res.status(StatusCodes.BAD_REQUEST).json({message: "Provide a valid lessonId"})
