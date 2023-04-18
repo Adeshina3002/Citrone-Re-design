@@ -4,7 +4,7 @@ const { StatusCodes } = require("http-status-codes")
 const morgan = require("morgan")
 const connectDB = require("./db/connect")
 require("dotenv").config()
-
+const quizRoute = require('./routes/routes')
 const app = express()
 const PORT = process.env.PORT || 3000 
 
@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000
 app.use(morgan("dev"))
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
-app.use(errorHandler)
+app.use('/quiz',quizRoute)
 
 app.get("/", (req, res) => {
     console.log("check again...");
