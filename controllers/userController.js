@@ -20,6 +20,53 @@ const allUser = async (req, res) => {
   }
 };
 
+const getUser = async (req, res) => {
+  try {
+    const { email } = req.params
+
+    if (!email )  {
+      return res.status(StatusCodes.BAD_REQUEST).json({message: "Invalid email"})
+    }
+    const user = await User.findOne({ email })
+
+    // remove password from the user data
+    const {password, ...rest} = Object.assign({}, user.toJSON()) // converting the return data from the mongoose to JSON
+
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({message: `User with ${email} not found`})
+    }
+
+    res.status(StatusCodes.OK).json(rest)
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
+  }
+}
+
+const updateUser = async(req, res) => {
+  try {
+
+    const { userId } = req.user 
+
+    if (!userId) {
+      return res.status(StatusCodes.NOT_FOUND).json({message: "Please log in your credentials"})
+    }
+
+    const data = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      password: req.body.password
+    } 
+
+    const updatedData = await User.updateOne({_id: userId}, data)
+
+    res.status(StatusCodes.OK).json({message: "Record updated..."})
+
+  } catch (error) {
+    res.status(StatusCodes.UNAUTHORIZED).json("Un authorized user")
+  }
+}
+
 const searchUser = async (req, res) => {
   try {
     const keyword = req.query.search;
@@ -32,7 +79,8 @@ const searchUser = async (req, res) => {
     
       ? {
           $or: [
-            { name: { $regex: keyword, $options: "i" } },
+            { firstName: { $regex: keyword, $options: "i" } },
+            { lastName: { $regex: keyword, $options: "i" } },
             { email: { $regex: keyword, $options: "i" } },
           ],
           _id: { $ne: req.user._id },
@@ -59,6 +107,8 @@ const currentUser =  async(req, res) => {
 
 module.exports = { 
   allUser,
+  getUser,
   searchUser,
-  currentUser
+  currentUser,
+  updateUser
 }

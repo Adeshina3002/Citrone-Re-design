@@ -19,16 +19,18 @@ app.use(express.json())
 app.use(cookieParser(process.env.JWT_SECRET))
 app.use(express.urlencoded({extended: false}))
 
+// routes
 app.use("/api/users", userRoutes)
 app.use("/api/auth", authRoutes)
 app.use("/api/chat", chatRoutes)
 app.use("/api/message", messageRoutes)
 
+// Get method for the root route
 app.get("/api", (req, res) => {
     res.status(StatusCodes.OK).json({ message: "API is running successfully" })
 })
 
-
+// incase of invalid routes from the client
 app.get("*", (req, res) => {
     res.status(StatusCodes.BAD_REQUEST).json({ message: "Invalid URL" })
 })
@@ -97,6 +99,5 @@ const start = async () => {
         console.log("Unable to connect", error.message);
     }
 }
-
 
 start()

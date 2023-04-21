@@ -9,6 +9,7 @@ const createJWT = ({ payload }) => {
 
 // const isTokenValid = ({ token }) => jwt.verify(token, process.env.JWT_SECRET)
 
+
 const isTokenValid = async (req, res, next) => {
     // try {
     //     let token;
@@ -33,26 +34,28 @@ const isTokenValid = async (req, res, next) => {
     // }
 
     try {
+        // access auth header to validate token
         const authHeader = req.headers.authorization;
         
         if (!authHeader || !authHeader.startsWith("Bearer")) {
           throw new Error("Invalid authorization header");
         }
         const token = authHeader.split(" ")[1];
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        // console.log(decoded);
+
+        // retrieve user details from the logged-in user
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        // console.log(decodedToken);
         req.user = {
-            userId: decoded.userId,
-            fullName: decoded.fullName,
-            track: decoded.track,
-            email: decoded.email
+            userId: decodedToken.userId,
+            fullName: decodedToken.fullName,
+            track: decodedToken.track,
+            email: decodedToken.email
         };
      
         next();
       } catch (error) {
         console.error(error);
-        res.status(401).send("Unauthorized user");
-        // res.status(401).send("Please try login again")
+        res.status(401).send("Authentication failed...");
       }
 }
 

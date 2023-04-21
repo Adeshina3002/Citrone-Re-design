@@ -2,33 +2,36 @@ const mongoose = require("mongoose")
 
 const assignmentSchema = mongoose.Schema({
     title: {
-        type: String,
-        required: true
+        type: String
     },
     description: {
-        type: String,
-        required: true
+        type: String
     },
     lesson: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Module",
-        required: true
+        ref: "Module"
+    },
+    assignmentURL: {
+        type: String
     },
     submittedBy: {
         type:  mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+        ref: "User"
     },
-    submittionURL: {
-        type: String,
-        required: true
+    submissionURL: {
+        type: String
     }, 
     submissionDate: {
         type: Date
     },
     dueDate: {
-        type: Date,
-        required: true
+        type: Date
+    }, 
+    grade: {
+        type: Number
+    },
+    status: {
+        type: String       
     }
 }, 
 {timestamps: true}
