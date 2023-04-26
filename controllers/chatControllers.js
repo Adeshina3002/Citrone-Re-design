@@ -109,7 +109,7 @@ const createGroupChat = async (req, res) => {
         // console.log("second log of users",users);
 
         const groupChat = await Chat.create({
-            chatName: req.body.name,
+            chatName: req.body.chatName,
             users: users,
             isGroupChat: true,
             groupAdmin: req.user.userId
@@ -230,7 +230,7 @@ const removeFromGroup = async(req, res) => {
             return res.status(StatusCodes.NOT_FOUND).json({message: "Chat not found"}) 
         }
 
-        res.status(StatusCodes.OK).json(removedMember)
+        res.status(StatusCodes.OK).json({message: "User removed from group",removedMember})
 
     } catch (error) {
         throw new BadRequestError(error.message)
