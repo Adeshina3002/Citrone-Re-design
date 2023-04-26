@@ -91,7 +91,7 @@ const fetchChat = async (req, res) =>{
 const createGroupChat = async (req, res) => {
     try {
         // check if the users and name parameters are passed in the request body
-        if (!req.body.users || !req.body.name) {
+        if (!req.body.users || !req.body.chatName) {
             throw new BadRequestError("All fields are mandatory")
         }
 
