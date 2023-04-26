@@ -213,6 +213,7 @@ const resetPassword = async(req, res) => {
         // hashing the new password
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(req.body.password, salt)
+
         const updateData = {
             password: hashedPassword,
             confirmPassword: hashedPassword

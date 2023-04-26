@@ -7,10 +7,10 @@ const router = express.Router()
 // POST METHODS
 router.post("/signup", createAccount)
 router.post("/login", login)
+router.post("/generateOTP", localVariables, generateOTP) //generate randome OTP
 
 // GET METHODS
 router.get("/logout", logout)
-router.post("/generateOTP", localVariables, generateOTP) //generate randome OTP
 router.get("/verifyOTP", verifyOTP)  //verify generated OTP
 // router.get("/createResetSession", createResetSession)  //reset all variables
 
