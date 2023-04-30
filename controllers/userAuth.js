@@ -30,7 +30,7 @@ const createAccount = async (req, res) => {
 
         generateOTP()
 
-        res.status(StatusCodes.CREATED).json({ user })
+        res.status(StatusCodes.CREATED).json({ status: "User created successfully", user })
 
     } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).json({error: error.message})
@@ -174,7 +174,7 @@ const resetSession = async(req, res) => {
         ${process.env.BASE_URL}/password-reset/${user._id}/${token.token}`
 
         await sendMail(user.email, "RESET PASSWORD", link)
-        res.status(StatusCodes.OK).json({message: "Password reset link has been set to your email address and expires in 10 minutes."})
+        res.status(StatusCodes.OK).json({message: "Password reset link has been sent to your inbox and expires in 10 minutes. You can check your spam folder"})
 
     } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).json(error.message)

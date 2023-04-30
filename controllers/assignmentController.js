@@ -115,7 +115,7 @@ const submitAssignment = async (req, res) => {
     }
 }
 
-const getAllAsignment = async (req, res) => {
+const getAllAssignment = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -164,6 +164,6 @@ const getAssignment = async (req, res) => {
 module.exports = {
     createAssignment,
     submitAssignment,
-    getAllAsignment,
+    getAllAssignment,
     getAssignment
 }
