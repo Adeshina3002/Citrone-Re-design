@@ -56,7 +56,27 @@ const allMessages = async (req, res) => {
     }
 }
 
+const deleteMessage = async (req, res) => {
+    try {
+        const messageId = req.params.messageId;
+
+        // find the message by id and ensure that the user has permission to delete it
+        const message = await Message.findOne({_id: messageId, sender: req.user.userId});
+        if (!message) {
+            throw new NotFoundError("Message not found");
+        }
+
+        // delete the message
+        await message.delete();
+
+        res.status(StatusCodes.OK).json({message: "Message deleted successfully"});
+    } catch (error) {
+        res.status(StatusCodes.BAD_REQUEST).json(error.message);
+    }
+}
+
 module.exports = {
     sendMessage,
-    allMessages
+    allMessages,
+    deleteMessage
 }
