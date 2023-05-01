@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 const CourseSchema = mongoose.Schema({
-    courseName: {
+    track: {
         type: String,
         enum: ["UI/UX", "Backend", "Frontend", "Data Science"],
         required: true
@@ -15,7 +15,7 @@ const CourseSchema = mongoose.Schema({
         enum: ["Beginner level", "Intermediate level"], 
         required: true
     },
-    users: [{
+    studentEnrolled: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }]

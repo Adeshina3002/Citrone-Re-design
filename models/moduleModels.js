@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 const moduleSchema = mongoose.Schema({
-    module: {
+    courseModule: {
         name: {
             type: String,
             required: true
@@ -9,6 +9,9 @@ const moduleSchema = mongoose.Schema({
         title: {
             type: String,
             required: true
+        },
+        modulePicture: {
+            type: String
         }
     },
 
@@ -21,7 +24,7 @@ const moduleSchema = mongoose.Schema({
             type: String,
             required: true
         },
-        content: {
+        description: {
             type: String,
             required: true
         },

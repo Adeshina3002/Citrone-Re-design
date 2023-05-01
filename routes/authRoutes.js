@@ -1,5 +1,5 @@
 const express = require("express")
-const { createAccount, login, logout, generateOTP, verifyOTP, resetSession, resetPassword } = require("../controllers/userAuth")
+const { createAccount, login, logout, generateOTP, verifyOTP, resetSession, resetPassword, profileSettings } = require("../controllers/userAuth")
 const localVariables = require("../middlewares/middleware")
 const { isTokenValid } = require("../utils/index")
 const router = express.Router()
@@ -17,6 +17,7 @@ router.get("/verifyOTP", verifyOTP)  //verify generated OTP
 // UPDATE METHODS
 router.post("/resetSession", resetSession) //reset session to validate email or send reset email link
 router.put("/password-reset/:userId/:token", resetPassword) //reset password to update user credentials
+router.put("/profileSettings/:id", profileSettings) // update user profile
 
 
 module.exports = router 
