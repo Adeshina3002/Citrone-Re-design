@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const optionSchema = new mongoose.Schema({
-  question: {
+  text: {
     type: String,
     required: true,
   },
