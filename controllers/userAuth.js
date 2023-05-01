@@ -12,9 +12,19 @@ const sendMail = require("../utils/nodeMailer")
 
 const createAccount = async (req, res) => {
     try {
-        const { firstName, lastName, email, password, track } = req.body
+        const { 
+            firstName, 
+            lastName, 
+            email, 
+            password, 
+            track,
+            country,
+            city,
+            bio,
+            bgImage,
+            profilePicture } = req.body
 
-        if (!firstName || !lastName || !email || !password || !track) {
+        if (!firstName || !lastName || !email || !password) {
             // return next (new BadRequestError("All fields are mandatory"))
             return res.status(StatusCodes.BAD_REQUEST).json({message: "All fields are mandatory"})
         }
@@ -28,7 +38,7 @@ const createAccount = async (req, res) => {
 
         const user = await User.create(req.body)
 
-        generateOTP()
+        // generateOTP()
 
         res.status(StatusCodes.CREATED).json({ status: "User created successfully", user })
 
@@ -232,6 +242,28 @@ const resetPassword = async(req, res) => {
     }
 }
 
+const profileSettings = async(req, res) => {
+    try {
+        // validating user existence
+        const user = await User.findById(req.params.id)
+
+        if (!user) {
+            res.status(StatusCodes.BAD_REQUEST).json("User does not exist")
+        }
+
+        // updating the user data
+        const updateUser = await User.findByIdAndUpdate(req.params.id, req.body,{
+            fields: {password: 0, confirmPassword: 0}, 
+            new: true,
+        });
+        res
+            .status(StatusCodes.OK)
+            .json({message: "user successfully updated", updatedUser})
+    } catch (error) {
+        res.status(StatusCodes.BAD_REQUEST).json(error.message)
+    }
+}
+
 
 
 
@@ -242,5 +274,6 @@ module.exports = {
     generateOTP, 
     verifyOTP,
     resetSession,
-    resetPassword
+    resetPassword, 
+    profileSettings
 }

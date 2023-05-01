@@ -38,7 +38,21 @@ const userSchema = new mongoose.Schema({
     track: {
         type: String,
         enum: ["UI/UX", "Frontend", "Backend", "Data Science"],
-        required: [true, "Select your track"]
+    },
+    country: {
+        type: String,
+    },
+    city: {
+        type: String
+    },
+    bio: {
+        type: String,
+    },
+    bgImage: {
+        type: String
+    },
+    profilePicture: {
+        type: String
     },
     roles: {
         type: String,
@@ -52,7 +66,6 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('save', async function() {
     const salt = await bcrypt.genSalt(10)
     this.password = await bcrypt.hash(this.password, salt)
-    // this.confirmPassword = await bcrypt.hash(this.password, this.confirmPassword, salt)
 })
 
 userSchema.methods.comparePassword = async function(userPassword) {

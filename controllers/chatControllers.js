@@ -211,7 +211,7 @@ const removeFromGroup = async(req, res) => {
         const { chatId, userId } = req.body 
 
         const removedMember = await Chat.findByIdAndRemove(chatId, {
-            $push: { users: userId }
+            $pull: { users: userId }
         },
         { 
             new: true 
