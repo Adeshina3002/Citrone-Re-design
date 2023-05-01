@@ -1,5 +1,5 @@
 const Assignment = require("../models/assignmentModel")
-const Course = require("../models/courseModels")
+const Course = require("../models/courseModel")
 const Module = require("../models/moduleModels")
 const { StatusCodes } = require("http-status-codes")
 
