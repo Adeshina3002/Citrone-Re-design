@@ -4,7 +4,7 @@ const Chat = require("../models/chatModel")
 const Message = require("../models/messageModel")
 const { StatusCodes } = require("http-status-codes")
 
-const accessChat = async (req, res) => {
+const createChat = async (req, res) => {
     try {
         const { userId } = req.body
         
