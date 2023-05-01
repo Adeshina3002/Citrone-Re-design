@@ -258,7 +258,7 @@ const profileSettings = async(req, res) => {
         });
         res
             .status(StatusCodes.OK)
-            .json({message: "user successfully updated", updatedUser})
+            .json({message: "user successfully updated", updateUser})
     } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).json(error.message)
     }

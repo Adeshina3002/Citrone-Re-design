@@ -208,33 +208,34 @@ const addToGroup = async (req, res) => {
 const removeFromGroup = async(req, res) => {
     try {
         // parse the chatId and chatName in the request body
-        const { chatId, userId } = req.body 
-
-        const removedMember = await Chat.findByIdAndRemove(chatId, {
-            $pull: { users: userId }
-        },
-        { 
-            new: true 
-        })
-        .populate({
-            path: 'users',
-            select: '-password -firstName -lastName'
+        const { chatId, userId } = req.body;
+    
+        const removedMember = await Chat.findOneAndUpdate(
+          { _id: chatId },
+          { $pull: { users: userId } },
+          { new: true }
+        )
+          .populate({
+            path: "users",
+            select: "-password -firstName -lastName",
           })
           .populate({
-            path: 'groupAdmin',
-            select: '-password -firstName -lastName'
-          })
-
+            path: "groupAdmin",
+            select: "-password -firstName -lastName",
+          });
+    
         if (!removedMember) {
-            // throw new NotFoundError("Chat not found")
-            return res.status(StatusCodes.NOT_FOUND).json({message: "Chat not found"}) 
+          return res
+            .status(StatusCodes.NOT_FOUND)
+            .json({ message: "Chat not found" });
         }
-
-        res.status(StatusCodes.OK).json({message: "User removed from group",removedMember})
-
-    } catch (error) {
-        throw new BadRequestError(error.message)
-    }
+    
+        res
+          .status(StatusCodes.OK)
+          .json({ message: "User removed from group", removedMember });
+      } catch (error) {
+        throw new BadRequestError(error.message);
+      }
 }
 
 

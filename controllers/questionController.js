@@ -11,7 +11,7 @@ const quizQuestions = async (req, res) => {
 
         // create a new question instance from the request body
         const question = new Question({
-          module: isModule.courseModule.title,
+          module: isModule._id,
           question: req.body.question,
           options: req.body.options,
         });
