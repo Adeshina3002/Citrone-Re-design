@@ -5,7 +5,7 @@ const courseSchema = mongoose.Schema({
       type: String,
       enum: [
         "UI/UX",
-        "Front Development",
+        "Frontend Development",
         "Backend Development",
         "Data Science",
         "Mobile Development",

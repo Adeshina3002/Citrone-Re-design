@@ -42,30 +42,30 @@ const getUser = async (req, res) => {
   }
 }
 
-const updateUser = async(req, res) => {
-  try {
+// const updateUser = async(req, res) => {
+//   try {
 
-    const { userId } = req.user 
+//     const { userId } = req.user 
 
-    if (!userId) {
-      return res.status(StatusCodes.NOT_FOUND).json({message: "Please log in your credentials"})
-    }
+//     if (!userId) {
+//       return res.status(StatusCodes.NOT_FOUND).json({message: "Please log in your credentials"})
+//     }
 
-    const data = {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      password: req.body.password
-    } 
+//     const data = {
+//       firstName: req.body.firstName,
+//       lastName: req.body.lastName,
+//       email: req.body.email,
+//       password: req.body.password
+//     } 
 
-    const updatedData = await User.updateOne({_id: userId}, data)
+//     const updatedData = await User.updateOne({_id: userId}, data)
 
-    res.status(StatusCodes.OK).json({message: "Record updated..."})
+//     res.status(StatusCodes.OK).json({message: "Record updated..."})
 
-  } catch (error) {
-    res.status(StatusCodes.UNAUTHORIZED).json("Un authorized user")
-  }
-}
+//   } catch (error) {
+//     res.status(StatusCodes.UNAUTHORIZED).json("Un authorized user")
+//   }
+// }
 
 const searchUser = async (req, res) => {
   try {
@@ -109,6 +109,5 @@ module.exports = {
   allUser,
   getUser,
   searchUser,
-  currentUser,
-  updateUser
+  currentUser
 }
