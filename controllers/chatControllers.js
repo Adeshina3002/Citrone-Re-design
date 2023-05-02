@@ -240,7 +240,7 @@ const removeFromGroup = async(req, res) => {
 
 
 module.exports = {
-    accessChat,
+    createChat,
     fetchChat,
     createGroupChat,
     renameGroup,

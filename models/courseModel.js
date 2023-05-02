@@ -1,26 +1,39 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
-const CourseSchema = mongoose.Schema({
+const courseSchema = mongoose.Schema({
     track: {
-        type: String,
-        enum: ["UI/UX", "Backend", "Frontend", "Data Science"],
-        required: true
+      type: String,
+      enum: [
+        "UI/UX",
+        "Front Development",
+        "Backend Development",
+        "Data Science",
+        "Mobile Development",
+        "Software Testing",
+        "Blockchain",
+        "DevOps",
+      ],
+      required: true,
     },
-    modules: [{
+    modules: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Module"
-    }],
+        ref: "Module",
+      },
+    ],
     level: {
-        type: String,
-        enum: ["Beginner level", "Intermediate level"], 
-        required: true
+      type: String,
+      enum: ["Beginner Level", "Intermediate Level"],
     },
-    studentEnrolled: [{
+    studentsEnrolled: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-    }]
-},
-    { timestamps: true }
-)
-
-module.exports = mongoose.model("Course", CourseSchema)
+        ref: "User",
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
+module.exports = mongoose.model("Course", courseSchema)
