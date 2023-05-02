@@ -42,31 +42,6 @@ const getUser = async (req, res) => {
   }
 }
 
-// const updateUser = async(req, res) => {
-//   try {
-
-//     const { userId } = req.user 
-
-//     if (!userId) {
-//       return res.status(StatusCodes.NOT_FOUND).json({message: "Please log in your credentials"})
-//     }
-
-//     const data = {
-//       firstName: req.body.firstName,
-//       lastName: req.body.lastName,
-//       email: req.body.email,
-//       password: req.body.password
-//     } 
-
-//     const updatedData = await User.updateOne({_id: userId}, data)
-
-//     res.status(StatusCodes.OK).json({message: "Record updated..."})
-
-//   } catch (error) {
-//     res.status(StatusCodes.UNAUTHORIZED).json("Un authorized user")
-//   }
-// }
-
 const searchUser = async (req, res) => {
   try {
     const keyword = req.query.search;

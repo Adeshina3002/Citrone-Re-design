@@ -10,7 +10,7 @@ router.get('/search', isTokenValid, searchUser)
 router.get('/current', isTokenValid, currentUser)
 
 // PUT METHODS
-// router.put("/updateUser", isTokenValid, updateUser) //update user profile
+
 
 
 module.exports = router 
