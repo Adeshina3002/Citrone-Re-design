@@ -1,37 +1,28 @@
 const mongoose = require("mongoose")
 
-const quizSchema = new mongoose.Schema({
-    module: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Module',
-      required: true
-    },
-    numQuestions: {
-      type: Number,
-      required: true
-    },
-    timeLimit: {
-      type: Number,
-      required: true
-    },
-    questions: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Question'
-    }],
-    graded: {
-      type: Boolean,
-      default: false
-    },
-    attempts: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Attempt'
-    }]
-  });
-  
-  quizSchema.pre('save', function (next) {
-    this.numQuestions = this.questions.length;
-    next();
-  });
+const quizSchema = mongoose.Schema({
+    moduleName: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Module',
+        required: true
+      },
+      questionLists: [
+        {
+            questionNumber: {
+                type: Number,
+                required: true
+            },
+            question: {
+                type: String, 
+                required: true
+            },
+            options: {
+            }
+        }
+      ],
+      answers: {}
+},
+    {timestamps: true}
+)
 
-  module.exports = mongoose.model("Quiz", quizSchema)
-  
+module.exports = mongoose.model("Quiz", quizSchema)

@@ -37,7 +37,16 @@ const userSchema = new mongoose.Schema({
     },
     track: {
         type: String,
-        enum: ["UI/UX", "Frontend", "Backend", "Data Science"],
+        enum: [
+            "UI/UX",
+            "Front Development",
+            "Backend Development",
+            "Data Science",
+            "Mobile Development",
+            "Software Testing",
+            "Blockchain",
+            "DevOps",
+          ],
     },
     country: {
         type: String,

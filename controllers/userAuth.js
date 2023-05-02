@@ -244,15 +244,16 @@ const resetPassword = async(req, res) => {
 
 const profileSettings = async(req, res) => {
     try {
+        const user = req.user
         // validating user existence
-        const user = await User.findById(req.params.id)
+        user = await User.findById({ _id:user.userId })
 
         if (!user) {
             res.status(StatusCodes.BAD_REQUEST).json("User does not exist")
         }
 
         // updating the user data
-        const updateUser = await User.findByIdAndUpdate(req.params.id, req.body,{
+        const updateUser = await User.findByIdAndUpdate(user.userId, req.body,{
             fields: {password: 0, confirmPassword: 0}, 
             new: true,
         });
