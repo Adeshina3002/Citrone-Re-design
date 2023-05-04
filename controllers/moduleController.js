@@ -34,15 +34,17 @@ const getAllModules = async (req, res, next) => {
 // Get a module
 const getModule = async (req, res, next) => {
   try {
-    const moduleId = req.params.id;
-    const modules = await Module.find();
-    const module = modules.find((module) => module.id === moduleId);
+    const moduleId = req.params.moduleId;
+    const module = await Module.findById(moduleId)
+
     if (!module) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ message: `Module with id ${moduleId} not found!` });
     }
+
     res.status(StatusCodes.OK).json({ message: module });
+    
   } catch (err) {
     next(err.message);
   }
@@ -146,15 +148,18 @@ const createModule = async (req, res, next) => {
         .json({ message: "Module already exists for this course" });
     }
 
-    // Create the module object
+    // Create an array of lesson objects from the request body
+    const lessonObjects = lessons.map(lesson => ({
+      name: lesson.lessonName,
+      title: lesson.lessonTitle,
+      description: lesson.description,
+      fileURL: lesson.fileURL,
+    }));
+
+    // Create the module object with the array of lessons
     const moduleData = {
       courseModule: { name, title, modulePicture },
-      lessons: [{
-        name: lessons[0].lessonName,
-        title: lessons[0].lessonTitle,
-        description: lessons[0].description,
-        fileURL: lessons[0].fileURL,
-      }],
+      lessons: lessonObjects,
       liveClassURL,
       recordedClassURL,
       course: course._id,
@@ -173,6 +178,7 @@ const createModule = async (req, res, next) => {
     next(error.message);
   }
 };
+
 
 const updateModule = async (req, res, next) => {
   try {

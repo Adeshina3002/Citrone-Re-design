@@ -49,7 +49,8 @@ const isTokenValid = async (req, res, next) => {
             userId: decodedToken.userId,
             fullName: decodedToken.fullName,
             track: decodedToken.track,
-            email: decodedToken.email
+            email: decodedToken.email,
+            roles: decodedToken.roles 
         };
      
         next();

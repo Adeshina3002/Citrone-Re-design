@@ -25,7 +25,7 @@ const getStudentCourses = async (req, res, next) => {
   try {
     const user = req.user;
     const signedInUser = await User.findById(user.userId);
-    const courses = await Course.find({ track: signedInUser.track }).populate('modules');
+    const courses = await Course.find({ track: signedInUser.track }).populate("modules")
 
     if (!courses || courses.length === 0) {
       return res
@@ -33,12 +33,12 @@ const getStudentCourses = async (req, res, next) => {
         .json({ message: "No course available or You need to update track in profile settings!" });
     }
 
-    const modules = [];
-    courses.forEach(course => {
-      modules.push(...course.modules);
-    });
+    // const modules = [];
+    // courses.forEach(course => {
+    //   modules.push(...course.modules);
+    // });
 
-    res.status(StatusCodes.OK).json({ modules: modules });
+    res.status(StatusCodes.OK).json({ courses });
 
   } catch (err) {
     next(err.message);
@@ -67,10 +67,11 @@ const getCourse = async (req, res) => {
         .json({ message: "Update your track on your student profile" });
     }
 
-    await course.populate("studentsEnrolled", { fullName: 1, _id: 1, email: 1 });
+    // await course.populate("studentsEnrolled", { fullName: 1, _id: 1, email: 1 });
+    await course.populate('modules');
 
     res.status(StatusCodes.OK).json({ course });
-    
+
   } catch (err) {
     res
       .status(StatusCodes.NOT_FOUND)
@@ -125,11 +126,12 @@ const createCourse = async (req, res) => {
   try {
     // Verify that the user creating the course is a tutor
     const user = req.user;
-    if (user.roles !== 'tutor') {
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ message: "Only tutors can create a course!" });
-    }
+    console.log(user);
+    // if (user.roles !== 'Tutor') {
+    //   return res
+    //     .status(StatusCodes.UNAUTHORIZED)
+    //     .json({ message: "Unauthorized!..." });
+    // }
 
     // Create a course based on the track
     const { track, modules, level, studentsEnrolled } = req.body;
@@ -158,7 +160,7 @@ const createCourse = async (req, res) => {
     });
     await newCourse.save();
 
-    res.status(StatusCodes.CREATED).json({ message: "Course created successfully!" });
+    res.status(StatusCodes.CREATED).json({ message: "Course created successfully!" , newCo});
   } catch (err) {
     console.error(err);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "An error occurred while creating the course!" });

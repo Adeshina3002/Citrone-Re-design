@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: [
             "UI/UX",
-            "Front Development",
+            "Frontend Development",
             "Backend Development",
             "Data Science",
             "Mobile Development",
@@ -65,7 +65,7 @@ const userSchema = new mongoose.Schema({
     },
     roles: {
         type: String,
-        enum: ["Student", "admin", "tutor"],
+        enum: ["Student", "Admin", "Tutor"],
         default: "Student"
     }
 },
