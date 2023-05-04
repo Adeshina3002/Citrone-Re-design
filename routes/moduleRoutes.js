@@ -5,11 +5,13 @@ const {
   getAllModules,
   getModule,
   createModule,
+  updateModule
 } = require("../controllers/moduleController");
 
-router.get("/modules", isTokenValid, getAllModules);
-router.get("/modules/:id", getModule);
-router.post("/modules/:courseId", createModule);
+router.get("/", isTokenValid, getAllModules);
+router.get("/module:id", getModule);
+router.post("/:courseId", createModule);
+router.put("/:moduleId", updateModule);
 
 
 module.exports = router;

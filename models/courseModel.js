@@ -13,7 +13,7 @@ const courseSchema = mongoose.Schema({
         "Blockchain",
         "DevOps",
       ],
-      required: true,
+      required: true
     },
     modules: [
       {
@@ -36,4 +36,5 @@ const courseSchema = mongoose.Schema({
     timestamps: true,
   }
 );
+
 module.exports = mongoose.model("Course", courseSchema)

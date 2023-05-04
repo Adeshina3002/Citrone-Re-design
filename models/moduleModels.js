@@ -38,8 +38,7 @@ const moduleSchema = mongoose.Schema({
         required: true
     },
     recordedClassURL: {
-        type: String,
-        required: true
+        type: String
     }
 },
     {timestamps: true}
