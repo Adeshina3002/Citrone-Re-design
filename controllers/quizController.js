@@ -151,6 +151,7 @@ const getQuiz = async (req, res) => {
       res.status(StatusCodes.BAD_REQUEST).json(error.message);
     }
   };
+
   
 
 // const updateQuiz = async (req, res) => {

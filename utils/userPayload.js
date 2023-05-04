@@ -3,7 +3,8 @@ const createUserPayload = (user) => {
         userId: user._id,
         fullName: user.fullName,
         email: user.email,
-        track: user.track
+        track: user.track,
+        roles: user.roles
     }
 }
 

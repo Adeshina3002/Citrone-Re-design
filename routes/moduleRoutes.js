@@ -9,7 +9,7 @@ const {
 } = require("../controllers/moduleController");
 
 router.get("/", isTokenValid, getAllModules);
-router.get("/module:id", getModule);
+router.get("/:moduleId", isTokenValid, getModule);
 router.post("/:courseId", createModule);
 router.put("/:moduleId", updateModule);
 
