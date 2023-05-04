@@ -10,6 +10,7 @@ const messageRoutes = require("./routes/messageRoutes")
 const assignmentRoutes = require("./routes/assignmentRoutes")
 const courseRoutes = require("./routes/courseRoutes")
 const moduleRoutes = require("./routes/moduleRoutes")
+const quizRoutes = require("./routes/quizRoutes")
 const {StatusCodes} = require("http-status-codes")
 require("dotenv").config()
 
@@ -29,7 +30,8 @@ app.use("/api/chat", chatRoutes)
 app.use("/api/message", messageRoutes)
 app.use("/api/assignment", assignmentRoutes)
 app.use("/api/courses", courseRoutes)
-app.use("/api/module",moduleRoutes)
+app.use("/api/module", moduleRoutes)
+app.use("/api/quiz", quizRoutes)
 
 // Get method for the root route
 app.get("/api", (req, res) => {

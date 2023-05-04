@@ -1,9 +1,16 @@
 const mongoose = require("mongoose")
 
 const quizSchema = mongoose.Schema({
-    moduleName: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Module',
+      moduleID: {
+        type: String,
+        required: true
+      },
+      moduleName: {
+        type: String,
+        required: true
+      },
+      moduleTitle: {
+        type: String,
         required: true
       },
       questionLists: [
@@ -17,10 +24,23 @@ const quizSchema = mongoose.Schema({
                 required: true
             },
             options: {
+                type: Object,
+                required: true
             }
         }
       ],
-      answers: {}
+      answers: [
+        {
+            questionNumber: {
+                type: Number,
+                required: true
+            },
+            answer: {
+                type: String,
+                required: true
+            }
+        }
+      ]
 },
     {timestamps: true}
 )

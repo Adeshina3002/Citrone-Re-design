@@ -10,7 +10,7 @@ const { isTokenValid } = require("../utils/jwt");
 const router = express.Router();
 
 router.get("/registeredcourse", isTokenValid, getStudentCourses);
-router.get("/:courseid", isTokenValid, getCourse);
+router.get("/:courseId", isTokenValid, getCourse);
 router.post("/create", isTokenValid, createCourse);
 router.put("/update/:id", updateCourse);
 
