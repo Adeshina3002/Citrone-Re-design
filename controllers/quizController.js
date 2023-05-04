@@ -128,7 +128,7 @@ const getQuiz = async (req, res) => {
         if (!question) {
             continue;
         }
-        if (question.options[answers.answer] === true) {
+        if (question.options[answer.answer] === true) {
           correctAnswers++;
         }
       }
