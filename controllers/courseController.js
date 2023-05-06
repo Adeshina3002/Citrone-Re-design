@@ -160,7 +160,8 @@ const createCourse = async (req, res) => {
     });
     await newCourse.save();
 
-    res.status(StatusCodes.CREATED).json({ message: "Course created successfully!" , newCo});
+    res.status(StatusCodes.CREATED).json({ message: "Course created successfully!" , newCourse});
+
   } catch (err) {
     console.error(err);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "An error occurred while creating the course!" });

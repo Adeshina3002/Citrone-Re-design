@@ -11,16 +11,20 @@ const assignmentSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Module"
     },
-    assignmentURL: {
-        type: String
-    },
     submittedBy: {
         type:  mongoose.Schema.Types.ObjectId,
         ref: "User"
-    },
-    submissionURL: {
+    }, 
+    submissionField: {
         type: String
     }, 
+    submissionFile: {
+        type: String
+    },
+    createdDate: {
+        type: Date,
+        default: Date.now()
+    },
     submissionDate: {
         type: Date
     },
@@ -30,7 +34,12 @@ const assignmentSchema = mongoose.Schema({
     grade: {
         type: Number
     },
-    status: {
+    assignementStatus: {
+        type: String,
+        enum: ["Open", "Awaiting Grade", "Graded"],
+        default: "Open"     
+    },
+    tutorComment: {
         type: String       
     }
 }, 

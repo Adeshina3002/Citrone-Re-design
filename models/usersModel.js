@@ -26,11 +26,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please provide your password"]
     },
+    newPassword: {
+        type: String,
+    },
     confirmPassword: {
         type: String,
         validate: {
             validator: function(v) {
-                return v === this.password
+                return v === (this.password || this.confirmPassword)
             },
             message: "Password do not match"
         }
@@ -78,7 +81,7 @@ userSchema.pre('save', async function() {
 })
 
 userSchema.methods.comparePassword = async function(userPassword) {
-    const isMatch = await bcrypt.compare(userPassword, this.password)
+    const isMatch = await bcrypt.compare(userPassword, this.password )
     return isMatch
 }
 

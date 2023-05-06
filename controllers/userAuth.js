@@ -8,6 +8,7 @@ const crypto = require("crypto")
 const Joi = require("joi")
 const bcrypt = require("bcrypt")
 const sendMail = require("../utils/nodeMailer")
+const cloudinary = require("../utils/cloudinary") 
 
 
 const createAccount = async (req, res) => {
@@ -248,22 +249,71 @@ const profileSettings = async(req, res) => {
         const user = await User.findById({_id:req.params.id})
 
         if (!user) {
-            res.status(StatusCodes.BAD_REQUEST).json("User does not exist")
+            res.status(StatusCodes.BAD_REQUEST).json({status: "Error", message: "User does not exist"})
         }
 
+        // upload profile picture to cloudinary
+        const result = await cloudinary.uploader.upload(req.file.path)
+
         // updating the user data
-        const updateUser = await User.findByIdAndUpdate(req.params.id, req.body,{
-            fields: {password: 0, confirmPassword: 0}, 
+        const updateUser = await User.findByIdAndUpdate(req.params.id, 
+            {
+                ...req.body,
+                profilePicture: result.secure_url,
+                cloudinary_id: result.public_id 
+            },
+            {
+            fields: {password: 0, confirmPassword: 0, newPassword: 0}, 
             new: true,
         });
         res
             .status(StatusCodes.OK)
-            .json({message: "user successfully updated", updateUser})
+            .json({status: "Success", message: "user successfully updated", updateUser})
     } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).json(error.message)
     }
 }
 
+
+// seting new password in the profile system
+const securitySettings = async (req, res, next) => {
+    try {
+        Joi.password = () => Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
+        Joi.newPassword = () => Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
+
+        const JoiSchema = Joi.object({
+            password: Joi.password().required(),
+            newPassword: Joi.newPassword().required(),
+            confirmPassword: Joi.string().valid(Joi.ref('newPassword')).required()
+        }).with('newPassword', 'confirmPassword')
+
+        const { error } = JoiSchema.validate(req.body)
+
+        if (error) {
+            return res.status(StatusCodes.BAD_REQUEST).send(error.details[0].message)
+        }
+
+        const user = req.user
+
+        const isCurrentPassword = await User.findOne({ _id: user.userId })
+        if (!isCurrentPassword || !(await isCurrentPassword.comparePassword(req.body.password))) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ status: "Not Successful", message: "Invalid Password, try again!!!" })
+        }
+
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(req.body.newPassword, salt)
+
+        await User.findByIdAndUpdate(user.userId, {
+            password: hashedPassword,
+            newPassword: hashedPassword,
+            confirmPassword: hashedPassword
+        })
+
+        res.status(StatusCodes.OK).json({ status: "Success", message: "User details updated successfully" })
+    } catch (error) {
+        next(error.stack)
+    }
+}
 
 
 
@@ -275,5 +325,6 @@ module.exports = {
     verifyOTP,
     resetSession,
     resetPassword, 
-    profileSettings
+    profileSettings,
+    securitySettings
 }
