@@ -1,5 +1,6 @@
 // modules 
 const express = require("express")
+const cors = require("cors")
 const morgan = require("morgan")
 const connectDB = require("./db/connect")
 const cookieParser = require("cookie-parser")
@@ -23,6 +24,7 @@ app.use(morgan("dev"))
 app.use(express.json())
 app.use(cookieParser(process.env.JWT_SECRET))
 app.use(express.urlencoded({extended: false}))
+app.use(cors())
 
 // routes
 app.use("/api/users", userRoutes)
