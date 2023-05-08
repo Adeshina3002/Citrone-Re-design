@@ -153,45 +153,45 @@ const createAssignment = async (req, res, next) => {
 
 
 
-const submitAssignment = async (req, res) => {
-    try {
-        const { studentId, assignmentId, submission_Field } = req.body
+// const submitAssignment = async (req, res) => {
+//     try {
+//         const { studentId, assignmentId, submission_Field } = req.body
 
-        if (!submission_Field) {
-            return res.status(StatusCodes.BAD_REQUEST).json({message: "Error submitting your assignment link"})
-        }
+//         if (!submission_Field) {
+//             return res.status(StatusCodes.BAD_REQUEST).json({message: "Error submitting your assignment link"})
+//         }
 
-        const foundAssignment = await Assignment.findOne({_id: assignmentId})
+//         const foundAssignment = await Assignment.findOne({_id: assignmentId})
 
-        if (!foundAssignment) {
-            return res.status(StatusCodes.NOT_FOUND).json({message: "Assignment not found"})
-        }
+//         if (!foundAssignment) {
+//             return res.status(StatusCodes.NOT_FOUND).json({message: "Assignment not found"})
+//         }
 
-        // Check if the current date is greater than the due date
-        const currentDate = new Date()
-        let status = "submitted on time";
-        if (currentDate > foundAssignment.dueDate) {
-            status = "late submission";
+//         // Check if the current date is greater than the due date
+//         const currentDate = new Date()
+//         let status = "submitted on time";
+//         if (currentDate > foundAssignment.dueDate) {
+//             status = "late submission";
 
-        return res.status(StatusCodes.BAD_REQUEST).json({message: "The due date for this assignment has passed. You cannot submit this assignment."})
-    }
+//         return res.status(StatusCodes.BAD_REQUEST).json({message: "The due date for this assignment has passed. You cannot submit this assignment."})
+//     }
 
-    const submitAssignment = {
-        submittedBy: studentId,
-        submission_Field,
-        submissionDate: Date.now(),
-        status
-    }
+//     const submitAssignment = {
+//         submittedBy: studentId,
+//         submission_Field,
+//         submissionDate: Date.now(),
+//         status
+//     }
 
-        // const status = submitAssignment.status 
-        const submittedAssignment = await Assignment.create(submitAssignment)
+//         // const status = submitAssignment.status 
+//         const submittedAssignment = await Assignment.create(submitAssignment)
 
-        res.status(StatusCodes.CREATED).json({status: "Success", message: "Assignment created successfully", submittedAssignment })
+//         res.status(StatusCodes.CREATED).json({status: "Success", message: "Assignment created successfully", submittedAssignment })
 
-    } catch (error) {
-        res.status(StatusCodes.BAD_REQUEST).json(error.message)
-    }
-}
+//     } catch (error) {
+//         res.status(StatusCodes.BAD_REQUEST).json(error.message)
+//     }
+// }
 
 // const getAllAssignment = async (req, res) => {
 //     try {
@@ -225,9 +225,52 @@ const submitAssignment = async (req, res) => {
 //       }
 // }
 
+const submitAssignment = async (req, res, next) => {
+  try {
+    const { submissionField, submissionFile } = req.body
+    const { id } = req.params
+
+    const assignment = await Assignment.findById(id)
+    if (!assignment) {
+      return res.status(404).json({ message: "Assignment not found" })
+    }
+
+    const now = new Date()
+    if (now > assignment.dueDate) {
+      return res.status(400).json({ message: "Assignment submission is overdue" })
+    }
+
+    assignment.submittedBy = req.user._id
+    assignment.submissionFile = submissionFile
+    assignment.submissionField = submissionField
+
+    if (!submissionField || !submissionFile) {
+      return res.status(StatusCodes.BAD_REQUEST).json({status: "Error", message: "You are yet to submit the result for your assignment"})
+    }
+
+    if (req.file) {
+      assignment.submissionFile = req.file.path
+    }
+    assignment.submissionDate = now
+    assignment.status = "Awaiting Grade"
+    assignment.submissionField = req.body.submissionField
+
+    await assignment.save()
+    res.status(200).json(assignment)
+  } catch (error) {
+    // res.status(500).json({ message: err.message })
+    next(error.message)
+  }
+}
+
+
 const getAllAssignment = async (req, res, next) => {
   try {
     const assignments = await Assignment.find({});
+
+    if (!assignments) {
+      return res.status(StatusCodes.BAD_REQUEST).json({status: "OK", message: "No assignment yet, check back later"})
+    }
 
     res.status(StatusCodes.OK).json(assignments);
   } catch (error) {
@@ -237,9 +280,9 @@ const getAllAssignment = async (req, res, next) => {
 };
 
 
-const getAssignment = async (req, res) => {
+const getAssignment = async (req, res, next) => {
     try {
-        const assignment = await Assignment.findOne({ _id: req.params.id }).populate('submittedBy', '-password firstName lastName');
+        const assignment = await Assignment.findOne({ _id: req.params.id });
 
         if (!assignment) {
           return res.status(StatusCodes.NOT_FOUND).json({ message: 'Assignment not found' });
@@ -248,12 +291,42 @@ const getAssignment = async (req, res) => {
         res.status(StatusCodes.OK).json(assignment);
       } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).json(error.message);
+        // next(error.message)
       }
 }
+
+
+const scoreAssignment = async (req, res, next) => {
+  try {
+    const submittedAssignment = await Assignment.find({ _id: req.params.assignmentId }).populate("submittedBy submittionField submittedFile");
+
+    if (!submittedAssignment) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: 'Assignment not found' }).populate("submittedBy submittedField submittedFile submissionDate");
+    }
+
+    submittedAssignment.grade = req.body.grade;
+    submittedAssignment.tutorComment = req.body.tutorComment;
+    submittedAssignment.status = "Graded";
+    // submittedAssignment.createdDate = new Date();
+
+    if (!submittedAssignment.grade) {
+      return res.status(StatusCodes.BAD_REQUEST).json({status: "", message: "Please provide the assignement grade"})
+    }
+
+    await submittedAssignment.save();
+
+    res.status(StatusCodes.OK).json({ status: "Success", message: 'Assignment graded successfully' });
+  } catch (error) {
+    // res.status(StatusCodes.BAD_REQUEST).json(error.message);
+    next(error.message)
+  }
+};
+
 
 module.exports = {
     createAssignment,
     submitAssignment,
     getAllAssignment,
-    getAssignment
+    getAssignment,
+    scoreAssignment
 }

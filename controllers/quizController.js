@@ -1,14 +1,11 @@
-const express = require('express');
-const router = express.Router();
 const Quiz = require('../models/quizModel');
 const Module = require("../models/moduleModels");
 const Score = require("../models/scoreModel")
 const { StatusCodes } = require('http-status-codes');
 
-const createQuiz = async (req, res, next) => {
+const createQuiz = async (req, res) => {
     try {
         const moduleId = await Module.findById({_id: req.params.moduleId}).select('courseModule.name courseModule.title');
-        console.log(moduleId);
 
         if (!moduleId) return res.status(StatusCodes.NOT_FOUND).json({
             status: "Error",
@@ -17,12 +14,10 @@ const createQuiz = async (req, res, next) => {
 
         const { questionLists, answers } = req.body
 
-        console.log(req.body);
-
-        if (!questionLists || !answers) {
+        if (!questionLists && !answers) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 status: "Error",
-                message: "You need to provide questions and answers to create a quiz"
+                message: "You need to provide both questions and answers to create a quiz"
             })
         }
 
@@ -101,15 +96,129 @@ const getQuiz = async (req, res) => {
     }
   };
 
-  const submitQuiz = async (req, res, next) => {
-    try {
-      const { quizId } = req.params;
-      const studentId = req.user.userId;
-      const { answers } = req.body;
+  // const submitQuiz = async (req, res, next) => {
+  //   try {
+  //     const quizId = req.params;
+  //     const studentId = req.user.userId;
+  //     // const attemptedQuestion = req.body.attemptedQuestion
+      
+  //     const attemptedQuestion = req.body;
   
-      // Get quiz
+  //     // Get quiz
+  //     const quiz = await Quiz.findById(quizId, { answers:1 });
+  //     const answers = quiz.answers;
+  //     // const quiz = await Quiz.findById(quizId);
+
+  //     if (!quiz) {
+  //       return res.status(StatusCodes.NOT_FOUND).json({
+  //         status: "Error",
+  //         message: "Quiz not found",
+  //       });
+  //     }
+  
+  //     const allQuestions = Object.keys(answers)
+  //     const total = allQuestions.length
+  //     // Calculate score
+  //     let correctAnswers = 0;
+  //     // for (let i = 0; i < answers.length; i++) {
+  //     //   const answer = answers[i];
+
+  //     //   const question = quiz.questionLists.find(
+  //     //     (q) => q.questionNumber === answer.questionNumber
+  //     //   );
+  //     //   if (!question) {
+  //     //       continue;
+  //     //   }
+  //     //   if (question.options[answer.answer] === true) {
+  //     //     correctAnswers++;
+  //     //   }
+  //     // }
+  //      for (let i = 0; i < total; i++) {
+  //       let questionNumber = allQuestions[i]
+  //       if (
+  //         attemptedQuestion[questionNumber] &&
+  //         answers[questionNumber] == attemptedQuestion[questionNumber]
+  //       ) {
+  //         score = score + 1;
+  //       }
+  //      }
+
+  //     const score = Math.round((correctAnswers / quiz.questionLists.length) * 100);
+  //     console.log(score);
+  
+  //     // Save score
+  //     const scoreObj = await Score.create({
+  //       studentId,
+  //       quizId,
+  //       score,
+  //     });
+  
+  //     res.status(StatusCodes.OK).json({
+  //       status: "Success",
+  //       message: "Quiz submitted successfully",
+  //       score: scoreObj,
+  //     });
+  //   } catch (error) {
+  //     res.status(StatusCodes.BAD_REQUEST).json(error.message);
+  //   }
+  // };
+
+  // const submitQuiz = async (req, res, next) => {
+  //   try {
+  //     const { quizId } = req.params;
+  //     const studentId = req.user.userId;
+  
+  //     const { attemptedQuestion } = req.body;
+  
+  //     const quiz = await Quiz.findById(quizId, { answers:1 });
+  //     const answers = quiz.answers;
+  
+  //     if (!quiz) {
+  //       return res.status(StatusCodes.NOT_FOUND).json({
+  //         status: "Error",
+  //         message: "Quiz not found",
+  //       });
+  //     }
+  
+  //     const total = quiz.questionLists.length;
+  //     let correctAnswers = 0;
+  //     for (let i = 0; i < total; i++) {
+  //       const questionNumber = quiz.questionLists[i].questionNumber;
+  //       const correctAnswer = answers.find((a) => a.questionNumber === questionNumber)?.answer;
+  //       const attemptedAnswer = attemptedQuestion.find((a) => a.questionNumber === questionNumber)?.answer;
+  //       if (correctAnswer === attemptedAnswer) {
+  //         correctAnswers++;
+  //       }
+  //     }
+  
+  //     const score = Math.round((correctAnswers / total) * 100);
+  
+  //     const scoreObj = await Score.create({
+  //       studentId,
+  //       quizId,
+  //       score,
+  //     });
+  
+  //     res.status(StatusCodes.OK).json({
+  //       status: "Success",
+  //       message: "Quiz submitted successfully",
+  //       score: scoreObj,
+  //     });
+  //   } catch (error) {
+  //     res.status(StatusCodes.BAD_REQUEST).json(error.message);
+  //   }
+  // };
+
+  const submitQuiz = async (req, res) => {
+    try {
+      const quizId = req.params.quizId;
+      const studentId = req.user.userId;
+      const attemptedQuestions = req.body.attemptedQuestion;
+  
       const quiz = await Quiz.findById(quizId);
 
+      const answers = quiz.answers;
+  
       if (!quiz) {
         return res.status(StatusCodes.NOT_FOUND).json({
           status: "Error",
@@ -117,25 +226,29 @@ const getQuiz = async (req, res) => {
         });
       }
   
-      // Calculate score
+      const questionLists = quiz.questionLists;
+      const totalQuestion = questionLists.length;
+      console.log("totalQuestion: ", totalQuestion);
+  
       let correctAnswers = 0;
-      for (let i = 0; i < answers.length; i++) {
-        const answer = answers[i];
+      
+      for (let i = 0; i < totalQuestion; i++) {
+        // checking All the questions in the array of question list in the database
+        const questListNumber = questionLists[i].questionNumber;
 
-        const question = quiz.questionLists.find(
-          (q) => q.questionNumber === answer.questionNumber
-        );
-        if (!question) {
-            continue;
-        }
-        if (question.options[answer.answer] === true) {
+        // checking all the questions number in the array of answers in the database
+        const correctAnswer = answers.find((a) => a.questionNumber === questListNumber)?.answer;
+        
+      // checking user selected answer corresponding to each question 
+        const attemptedAnswer = attemptedQuestions.find((a) => a.questionNumber === questListNumber)?.answer;
+
+        if (correctAnswer === attemptedAnswer) {
           correctAnswers++;
         }
       }
-      const score = Math.round((correctAnswers / quiz.questionLists.length) * 100);
-      console.log(score);
+      
+      const score = totalQuestion > 0 ? Math.round((correctAnswers / totalQuestion) * 100) : 0;
   
-      // Save score
       const scoreObj = await Score.create({
         studentId,
         quizId,
@@ -147,10 +260,13 @@ const getQuiz = async (req, res) => {
         message: "Quiz submitted successfully",
         score: scoreObj,
       });
+
     } catch (error) {
       res.status(StatusCodes.BAD_REQUEST).json(error.message);
     }
   };
+  
+  
 
   
 

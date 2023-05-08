@@ -260,6 +260,7 @@ const profileSettings = async(req, res) => {
             {
                 ...req.body,
                 profilePicture: result.secure_url,
+                bgImage: result.secure_url, 
                 cloudinary_id: result.public_id 
             },
             {
