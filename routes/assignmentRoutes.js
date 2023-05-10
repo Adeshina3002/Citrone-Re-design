@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const {createAssignment, submitAssignment, getAllAssignment, getAssignment, scoreAssignment} = require("../controllers/assignmentController")
-const {isTokenValid} = require("../utils")
+const { isTokenValid } = require("../utils")
 const uploadMiddleware = require("../utils/multer")
 
 router.post("/submit/:id", isTokenValid, uploadMiddleware, submitAssignment)

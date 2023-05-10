@@ -44,7 +44,7 @@ const isTokenValid = async (req, res, next) => {
 
         // retrieve user details from the logged-in user
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-        // console.log(decodedToken);
+        // console.log("decoded token: ", decodedToken);
         req.user = {
             userId: decodedToken.userId,
             fullName: decodedToken.fullName,

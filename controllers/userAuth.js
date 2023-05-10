@@ -39,9 +39,7 @@ const createAccount = async (req, res) => {
 
         const user = await User.create(req.body)
 
-        // generateOTP()
-
-        res.status(StatusCodes.CREATED).json({ status: "User created successfully", user })
+        res.status(StatusCodes.CREATED).json({ status: "Congratulations! Your account has been created successfully. You may log in now.", user })
 
     } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).json({error: error.message})
